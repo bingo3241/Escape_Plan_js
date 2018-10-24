@@ -14,6 +14,7 @@ io.on('connection', function(socket){
         console.log(socket.id+" "+message)
         if(message === "join") {
             io.emit("status", "waiting for players...");
+            // must send random index not
             io.emit("board", {
                 warderindex: [2,3],
                 prisonerindex: [4,1],
