@@ -22,6 +22,7 @@ io.on("connection", function(socket) {
         tunnelindex: [4, 0],
         obstacleindex: [[0, 0], [2, 2], [4, 2], [1, 3], [3, 4]]
       });
+      io.emit("turn" , "Your turn!")
     }
   });
 
