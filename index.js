@@ -3,7 +3,21 @@ var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var connectionsLimit = 2;
 var clients = [];
+var roles =[];
 // var path = require('path');
+function randomRoles() {
+  if(Math.random() < 0.5) {
+    roles.push({
+      player1: "prisoner",
+      player2: "warder"
+    })
+  } else {
+    roles.push({
+      player1: "warder",
+      player2: "prisoner"
+    })
+  }
+};
 
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
@@ -27,13 +41,21 @@ socket.join('room 1', () => {
             player2: ""
         });
         io.emit("waiting", "waiting for another opponent...");
-    } else {
+    } else if(io.engine.clientsCount === 2) {
         clients[clients.length-1].player2 = socket.id;
+        console.log(clients);
         io.emit("connected", "connection success");
+        randomRoles();
+        io.to(clients[0].player1).emit("char",roles[0].player1);
+        console.log("Player1 is "+roles[0].player1);
+        io.to(clients[0].player2).emit("char",roles[0].player2);
+        console.log("Player2 is "+roles[0].player2);
+
+        
         // change to send array of randomed field
         io.to(clients[clients.length-1].player1).emit("start", "start match");
     }
-        console.log(clients);
+        
 
   // console.log("one user connected " + socket.id);
   // console.log("This is from Tai");
