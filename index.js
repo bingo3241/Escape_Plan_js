@@ -7,25 +7,35 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 })
 
-let clients = [];
+// let clients = [];
 
 io.on('connection', function(socket){
     console.log('one user connected ' + socket.id);
 
-    socket.on('req', () => {
-        if(client.length%2 === 0) {
-            clients.push({
-                player1: socket.id,
-                player2: ""
-            });
-            io.emit("waiting", "waiting for another opponent...")
-        } else {
-            clients[clients.length-1].player2 = socket.id;
-            io.emit("connected", "connection success");
-            // change to send array of randomed field
-            io.to(clients[clients.length-1].player1).emit("start", "start match")
-        }
+    socket.on('req', (message) => {
+        // if(client.length%2 === 0) {
+        //     clients.push({
+        //         player1: socket.id,
+        //         player2: ""
+        //     });
+        //     io.emit("waiting", "waiting for another opponent...")
+        // } else {
+        //     clients[clients.length-1].player2 = socket.id;
+        //     io.emit("connected", "connection success");
+        //     // change to send array of randomed field
+        //     io.to(clients[clients.length-1].player1).emit("start", "start match")
+        // }
+        console.log(message)
     });
+
+    socket.on('turn', (data) => {
+
+    })
+
+    socket.on('board', () => {
+
+    })
+
 
     socket.on('disconnect', function() {
         console.log('one user disconnected ' + socket.id);
