@@ -18,7 +18,7 @@ var board = {
   "warderindex":[],
   "prisonerindex":[],
   "tunnelindex":[],
-  "obstracleindex":[]
+  "obstacleindex":[]
 }
 // var path = require('path');
 function randomRoles() {
@@ -30,6 +30,10 @@ function randomRoles() {
     roomClients.player1.role = "warder";
   }
 };
+
+function randomBoard() {
+
+}
 
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
@@ -44,29 +48,69 @@ io.on("connection", function(socket) {
   }
   console.log('one user connected ' + socket.id);
   socket.on("req", (message) => {
-    socket.join('room', () => {
-      let rooms = Object.keys(socket.rooms);
-      console.log(rooms);
-      io.of('/').in('room').clients((error, clients) => {
-        if (error) throw error;
-        if(clients.length === 1) {
-          roomClients.player1.id = socket.id;
-          console.log("Client(s) in the room: "+clients);
-          io.emit("waiting", "waiting for another opponent...");
-        } else if(clients.length === 2) {
-          roomClients.player2.id = socket.id;
-          console.log("Client(s) in the room: "+clients);
-          io.emit("connected", "connection success");
-          randomRoles();
-          io.to(clients[0]).emit("char",roomClients.player1.role);
-          io.to(clients[1]).emit("char",roomClients.player2.role);
-          console.log(roomClients);
-          
-          // change to send array of randomed field
-          io.to(roomClients.player1).emit("start", "start match");
-        }  
+    if(message === "join") {
+      socket.join('room', () => {
+        let rooms = Object.keys(socket.rooms);
+        console.log(rooms);
+        io.of('/').in('room').clients((error, clients) => {
+          if (error) throw error;
+          if(clients.length === 1) {
+            if(roomClients.player1.id === "") {
+              roomClients.player1.id = socket.id;
+              console.log("Client(s) in the room: "+clients);
+              io.emit("waiting", "waiting for another opponent...");
+            } else {
+              roomClients.player2.id = socket.id;
+              console.log("Client(s) in the room: "+clients);
+              io.emit("waiting", "waiting for another opponent...");
+            }
+            
+          } else if (clients.length === 2) {
+            if (roomClients.player2.id === "") {
+              roomClients.player2.id = socket.id;
+              console.log("Client(s) in the room: "+clients);
+              io.emit("connected", "connection success");
+              randomRoles();
+              io.to(clients[0]).emit("char",roomClients.player1.role);
+              io.to(clients[1]).emit("char",roomClients.player2.role);
+              console.log(roomClients);
+              randomBoard();
+              io.emit("board", board);
+              // change to send array of randomed field
+              io.to(roomClients.player1).emit("start", "start match");
+            } else {
+              roomClients.player1.id = socket.id;
+              console.log("Client(s) in the room: "+clients);
+              io.emit("connected", "connection success");
+              randomRoles();
+              io.to(clients[0]).emit("char",roomClients.player2.role);
+              io.to(clients[1]).emit("char",roomClients.player1.role);
+              console.log(roomClients);
+              randomBoard();
+              io.emit("board", board);
+              // change to send array of randomed field
+              io.to(roomClients.player1).emit("start", "start match");
+            }
+            
+          }  
+        });
       });
-    });
+    } else if (message === "leave") {
+      socket.leave('room');
+      if(roomClients.player1.id === socket.id) {
+        roomClients.player1.id == "";
+        roomClients.player1.role == "";
+        roomClients.player1.index == ""
+      } else if(roomClients.player2.id === socket.id) {
+        roomClients.player2.id == "";
+        roomClients.player2.role == "";
+        roomClients.player2.index == ""
+      }
+      console.log(roomClients);
+      io.of('/').in('room').clients((error, clients) => {
+        io.to(clients[0]).emit("waiting", "waiting for another opponent...")
+      });
+    }
   })
   
 
@@ -91,9 +135,11 @@ io.on("connection", function(socket) {
   //       if(roomClients.player1.id === socket.id) {
   //         if() {
   //           roomClients.player1.index[1]++;
+  //           io.emit("board", board);
   //         }
   //       } else if(roomClients.player2.id === socket.id) {
   //         roomClients.player2.index[1]++;
+  //         io.emit("board", board);
   //       }
   //       break;
       
@@ -146,6 +192,8 @@ io.on("connection", function(socket) {
 
   socket.on("disconnect", function() {
     console.log("one user disconnected " + socket.id);
+    console.log(roomClients);
+    
   });
 });
 
