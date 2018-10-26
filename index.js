@@ -2,19 +2,32 @@ var app = require("express")();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var connectionsLimit = 2;
-var roles =[];
+var roomClients = {
+  "player1": {
+    "id":"",
+    "role":"",
+    "index":[]
+  },
+  "player2": {
+    "id":"",
+    "role":"",
+    "index":[]
+  }
+};
+var board = {
+  "warderindex":[],
+  "prisonerindex":[],
+  "tunnelindex":[],
+  "obstracleindex":[]
+}
 // var path = require('path');
 function randomRoles() {
   if(Math.random() < 0.5) {
-    roles.push({
-      player1: "prisoner",
-      player2: "warder"
-    })
+    roomClients.player1.role = "prisoner";
+    roomClients.player2.role = "warder";
   } else {
-    roles.push({
-      player1: "warder",
-      player2: "prisoner"
-    })
+    roomClients.player2.role = "prisoner";
+    roomClients.player1.role = "warder";
   }
 };
 
@@ -30,29 +43,88 @@ io.on("connection", function(socket) {
     return
   }
   console.log('one user connected ' + socket.id);
-  socket.join('room', () => {
-    let rooms = Object.keys(socket.rooms);
-    console.log(rooms);
-    io.to('room').emit(socket.id+" has joined the room")
-    io.of('/').in('room').clients((error, clients) => {
-      if (error) throw error;
-      if(clients.length === 1) {
-        console.log("Client(s) in the room: "+clients);
-        io.emit("waiting", "waiting for another opponent...");
-      } else if(clients.length === 2) {
-        console.log("Client(s) in the room: "+clients);
-        io.emit("connected", "connection success");
-        randomRoles();
-        io.to(clients[0]).emit("char",roles[0].player1);
-        console.log("Player1 ("+clients[0]+") is "+roles[0].player1);
-        io.to(clients[1]).emit("char",roles[0].player2);
-        console.log("Player2 ("+clients[1]+") is "+roles[0].player2);
-
-        
-        // change to send array of randomed field
-        io.to(clients[clients.length-1].player1).emit("start", "start match");
-      }  
+  socket.on("req", (message) => {
+    socket.join('room', () => {
+      let rooms = Object.keys(socket.rooms);
+      console.log(rooms);
+      io.of('/').in('room').clients((error, clients) => {
+        if (error) throw error;
+        if(clients.length === 1) {
+          roomClients.player1.id = socket.id;
+          console.log("Client(s) in the room: "+clients);
+          io.emit("waiting", "waiting for another opponent...");
+        } else if(clients.length === 2) {
+          roomClients.player2.id = socket.id;
+          console.log("Client(s) in the room: "+clients);
+          io.emit("connected", "connection success");
+          randomRoles();
+          io.to(clients[0]).emit("char",roomClients.player1.role);
+          io.to(clients[1]).emit("char",roomClients.player2.role);
+          console.log(roomClients);
+          
+          // change to send array of randomed field
+          io.to(roomClients.player1).emit("start", "start match");
+        }  
+      });
     });
+  })
+  
+
+  // socket.on("req", message => {
+  //   console.log(socket.id + " " + message);
+  //   if (message === "join") {
+  //     io.emit("status", "waiting for players...");
+  //     // must send random index not
+  //     io.emit("board", {
+  //       warderindex = [2, 3],
+  //       prisonerindex =[4, 1],
+  //       tunnelindex = [4, 0],
+  //       obstacleindex = [[0, 0], [2, 2], [4, 2], [1, 3], [3, 4]]
+  //     });
+  //     io.emit("turn" , "Your turn!")
+  //   }
+  // });
+
+  // socket.on("move", message => {
+  //   switch (message) {
+  //     case "up":
+  //       if(roomClients.player1.id === socket.id) {
+  //         if() {
+  //           roomClients.player1.index[1]++;
+  //         }
+  //       } else if(roomClients.player2.id === socket.id) {
+  //         roomClients.player2.index[1]++;
+  //       }
+  //       break;
+      
+  //     case "down":
+  //       if(roomClients.player1.id === socket.id) {
+  //         roomClients.player1.index[1]--;
+  //       } else if(roomClients.player2.id === socket.id) {
+  //         roomClients.player2.index[1]--;
+  //       }
+  //       break;
+      
+  //     case "left":
+  //       if(roomClients.player1.id === socket.id) {
+  //         roomClients.player1.index[0]++;
+  //       } else if(roomClients.player2.id === socket.id) {
+  //         roomClients.player2.index[0]++;
+  //       }
+  //       break;
+
+  //     case "right":
+
+  //       break;
+      
+  //     case "skip":
+
+  //       break;
+        
+  //     default:
+  //       break;
+  //   }
+  // });
         
 
   // console.log("one user connected " + socket.id);
@@ -70,7 +142,7 @@ io.on("connection", function(socket) {
   //       obstacleindex: [[0, 0], [2, 2], [4, 2], [1, 3], [3, 4]]
   //     });
   //   }
-  });
+  
 
   socket.on("disconnect", function() {
     console.log("one user disconnected " + socket.id);
