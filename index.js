@@ -62,6 +62,7 @@ function randomBoard() {
   obs1[0] = Math.round(obs1num/5);
   obs1[1] = obs1num%5;
   while(obs1num == tunnelnum || obs1num == wardennum || obs1num == prisonernum) {
+    obs1num = Math.round(Math.random()*25);
     obs1[0] = Math.round(obs1num/5);
     obs1[1] = obs1num%5;
   }
@@ -72,7 +73,8 @@ function randomBoard() {
   var obs2num = Math.round(Math.random()*25);
   obs2[0] = Math.round(obs2num/5);
   obs2[1] = obs2num%5;
-  while(obs2num == tunnelnum || obs2num == wardennum || obs2num == prisonernum || obs2num == obs1num) {
+  while(obs2num == tunnelnum || obs2num == wardennum || obs2num == prisonernum || obs2num == obs1num) {obs1num = Math.round(Math.random()*25);
+    obs2num = Math.round(Math.random()*25);
     obs2[0] = Math.round(obs2num/5);
     obs2[1] = obs2num%5;
   }
@@ -84,6 +86,7 @@ function randomBoard() {
   obs3[0] = Math.round(obs3num/5);
   obs3[1] = obs3num%5;
   while(obs3num == tunnelnum || obs3num == wardennum || obs3num == prisonernum || obs3num == obs1num || obs3num == obs2num){
+    obs3num = Math.round(Math.random()*25);
     obs3[0] = Math.round(obs3num/5);
     obs3[1] = obs3num%5;
   }
@@ -95,6 +98,7 @@ function randomBoard() {
   obs4[0] = Math.round(obs4num/5);
   obs4[1] = obs4num%5;
   while(obs4num == tunnelnum || obs4num == wardennum || obs4num == prisonernum || obs4num == obs1num || obs4num == obs2num || obs4num == obs3num){
+    obs4num = Math.round(Math.random()*25);
     obs4[0] = Math.round(obs4num/5);
     obs4[1] = obs4num%5;
   }
@@ -106,6 +110,7 @@ function randomBoard() {
   obs5[0] = Math.round(obs5num/5);
   obs5[1] = obs5num%5;
   while(obs5num == tunnelnum || obs5num == wardennum || obs5num == prisonernum || obs5num == obs1num || obs5num == obs2num || obs5num == obs3num || obs5num == obs4num){
+    obs5num = Math.round(Math.random()*25);
     obs5[0] = Math.round(obs5num/5);
     obs5[1] = obs5num%5;
   }
@@ -168,23 +173,30 @@ io.on("connection", function(socket) {
               randomBoard();
               io.emit("board", board);
               // change to send array of randomed field
-              io.to(roomClients.player1).emit("start", "start match");
-            }
-            
-          }  
+              io.to(clients[0]).emit("start", "start match");
+              io.to(clients[1]).emit("start", "start match");
+              if(roomClients.player1.role == "warden") {
+                io.to(roomClients.player1.id).emit("turn", "warden");
+              } else if(roomClients.player2.role == "warden") {
+                io.to(roomClients.player2.id).emit("turn", "warden");
+              }
+            }  
+          };
         });
       });
-    } else if (message === "leave") {
-      socket.leave('room');
-      if(roomClients.player1.id === socket.id) {
-        roomClients.player1.id == "";
-        roomClients.player1.role == "";
-        roomClients.player1.index == ""
-      } else if(roomClients.player2.id === socket.id) {
-        roomClients.player2.id == "";
-        roomClients.player2.role == "";
-        roomClients.player2.index == ""
-      }
+    }
+    if (message === "leave") {
+      socket.leave('room', () => {
+        if(roomClients.player1.id === socket.id) {
+          roomClients.player1.id == "";
+          roomClients.player1.role == "";
+          roomClients.player1.index == ""
+        } else if(roomClients.player2.id === socket.id) {
+          roomClients.player2.id == "";
+          roomClients.player2.role == "";
+          roomClients.player2.index == ""
+        }
+      });
       console.log(roomClients);
       io.of('/').in('room').clients((error, clients) => {
         io.to(clients[0]).emit("waiting", "waiting for another opponent...")
@@ -208,48 +220,290 @@ io.on("connection", function(socket) {
   //   }
   // });
 
-  // socket.on("move", message => {
-  //   switch (message) {
-  //     case "up":
-  //       if(roomClients.player1.id === socket.id) {
-  //         if() {
-  //           roomClients.player1.index[1]++;
-  //           io.emit("board", board);
-  //         }
-  //       } else if(roomClients.player2.id === socket.id) {
-  //         roomClients.player2.index[1]++;
-  //         io.emit("board", board);
-  //       }
-  //       break;
+  socket.on("move", message => {
+    if(message === "moveup") {
+      if(roomClients.player1.id === socket.id) {
+        if(roomClients.player1.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 0 && board.obstacleindex[1] - board.prisonerindex[1] == 1) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player1.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 0 && board.obstacleindex[1] - board.wardenindex[1] == 1) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      } else if(roomClients.player2.id === socket.id) {
+        if(roomClients.player2.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 0 && board.obstacleindex[1] - board.prisonerindex[1] == 1) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player2.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 0 && board.obstacleindex[1] - board.wardenindex[1] == 1) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      }
+    } else if(message === "movedown") {
+      if(roomClients.player1.id === socket.id) {
+        if(roomClients.player1.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 0 && board.obstacleindex[1] - board.prisonerindex[1] == -1) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player1.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 0 && board.obstacleindex[1] - board.wardenindex[1] == -1) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      } else if(roomClients.player2.id === socket.id) {
+        if(roomClients.player2.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 0 && board.obstacleindex[1] - board.prisonerindex[1] == -1) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player2.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 0 && board.obstacleindex[1] - board.wardenindex[1] == -1) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      }
+    } else if(message === "moveleft") {
+      if(roomClients.player1.id === socket.id) {
+        if(roomClients.player1.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == -1 && board.obstacleindex[1] - board.prisonerindex[1] == 0) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player1.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == -1 && board.obstacleindex[1] - board.wardenindex[1] == 0) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      } else if(roomClients.player2.id === socket.id) {
+        if(roomClients.player2.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == -1 && board.obstacleindex[1] - board.prisonerindex[1] == 0) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player2.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == -1 && board.obstacleindex[1] - board.wardenindex[1] == 0) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      }
+    } else if(message === "moveright") {
+      if(roomClients.player1.id === socket.id) {
+        if(roomClients.player1.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 1 && board.obstacleindex[1] - board.prisonerindex[1] == 0) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player1.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 1 && board.obstacleindex[1] - board.wardenindex[1] == 0) {
+            io.to(roomClients.player1.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      } else if(roomClients.player2.id === socket.id) {
+        if(roomClients.player2.role === "prisoner") {
+          if(board.obstacleindex[0] - board.prisonerindex[0] == 1 && board.obstacleindex[1] - board.prisonerindex[1] == 0) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.prisonerindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "warden")
+          }
+          
+        } else if(roomClients.player2.role === "warden") {
+          if(board.obstacleindex[0] - board.wardenindex[0] == 1 && board.obstacleindex[1] - board.wardenindex[1] == 0) {
+            io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
+          } else {
+            board.wardenindex[1]++;
+          io.emit("board", board);
+          io.emit("turn", "prisoner")
+          }
+        }
+      }
+    }
+    
+    // } else if(message === "upright") {
+    //   if(roomClients.player1.id === socket.id) {
+    //     if(roomClients.player1.role === "prisoner") {
+    //       board.prisonerindex[0]++;
+    //       board.prisonerindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player1.role === "warden") {
+    //       board.wardenindex[0]++;
+    //       board.wardenindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   } else if(roomClients.player2.id === socket.id) {
+    //     if(roomClients.player2.role === "prisoner") {
+    //       board.prisonerindex[0]++;
+    //       board.prisonorindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player2.role === "warden") {
+    //       board.wardenindex[0]++;
+    //       board.wardenindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   }
+    // } else if(message === "upleft") {
+    //   if(roomClients.player1.id === socket.id) {
+    //     if(roomClients.player1.role === "prisoner") {
+    //       board.prisonerindex[0]--;
+    //       board.prisonerindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player1.role === "warden") {
+    //       board.wardenindex[0]--;
+    //       board.wardenindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   } else if(roomClients.player2.id === socket.id) {
+    //     if(roomClients.player2.role === "prisoner") {
+    //       board.prisonerindex[0]--;
+    //       board.prisonorindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player2.role === "warden") {
+    //       board.wardenindex[0]--;
+    //       board.wardenindex[1]++;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   }
+    // } else if(message === "downright") {
+    //   if(roomClients.player1.id === socket.id) {
+    //     if(roomClients.player1.role === "prisoner") {
+    //       board.prisonerindex[0]++;
+    //       board.prisonerindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player1.role === "warden") {
+    //       board.wardenindex[0]++;
+    //       board.wardenindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   } else if(roomClients.player2.id === socket.id) {
+    //     if(roomClients.player2.role === "prisoner") {
+    //       board.prisonerindex[0]++;
+    //       board.prisonorindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player2.role === "warden") {
+    //       board.wardenindex[0]++;
+    //       board.wardenindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   }
+    // } else if(message === "downleft") {
+    //   if(roomClients.player1.id === socket.id) {
+    //     if(roomClients.player1.role === "prisoner") {
+    //       board.prisonerindex[0]--;
+    //       board.prisonerindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player1.role === "warden") {
+    //       board.wardenindex[0]--;
+    //       board.wardenindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
+    //   } else if(roomClients.player2.id === socket.id) {
+    //     if(roomClients.player2.role === "prisoner") {
+    //       board.prisonerindex[0]--;
+    //       board.prisonorindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "warden")
+    //     } else if(roomClients.player2.role === "warden") {
+    //       board.wardenindex[0]--;
+    //       board.wardenindex[1]--;
+    //       io.emit("board", board);
+    //       io.emit("turn", "prisoner")
+    //     }
       
-  //     case "down":
-  //       if(roomClients.player1.id === socket.id) {
-  //         roomClients.player1.index[1]--;
-  //       } else if(roomClients.player2.id === socket.id) {
-  //         roomClients.player2.index[1]--;
-  //       }
-  //       break;
-      
-  //     case "left":
-  //       if(roomClients.player1.id === socket.id) {
-  //         roomClients.player1.index[0]++;
-  //       } else if(roomClients.player2.id === socket.id) {
-  //         roomClients.player2.index[0]++;
-  //       }
-  //       break;
-
-  //     case "right":
-
-  //       break;
-      
-  //     case "skip":
-
-  //       break;
-        
-  //     default:
-  //       break;
-  //   }
-  // });
+  }),
         
 
   // console.log("one user connected " + socket.id);
