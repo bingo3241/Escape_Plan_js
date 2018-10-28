@@ -12,6 +12,7 @@ var roomClients = {
     "role":""
   }
 };
+
 var board = {
   "wardenindex":[,],
   "prisonerindex":[,],
@@ -124,66 +125,72 @@ app.get("/", function(req, res) {
 });
 
 io.on("connection", function(socket) {
-  if (io.engine.clientsCount > connectionsLimit) {
-    socket.emit('err', { message: 'reach the limit of connections' })
-    socket.disconnect()
-    console.log(socket.id+ ' has tried to connect but the socket has reach the limit of connections. Disconnected...')
-    return
-  }
+  // if (io.engine.clientsCount > connectionsLimit) {
+  //   socket.emit('err', { message: 'reach the limit of connections' })
+  //   socket.disconnect()
+  //   console.log(socket.id+ ' has tried to connect but the socket has reach the limit of connections. Disconnected...')
+  //   return
+  // }
   console.log('one user connected ' + socket.id);
   socket.on("req", (message) => {
     if(message === "join") {
-      socket.join('room', () => {
-        let rooms = Object.keys(socket.rooms);
-        console.log(rooms);
-        io.of('/').in('room').clients((error, clients) => {
-          if (error) throw error;
-          if(clients.length === 1) {
-            if(roomClients.player1.id === "") {
-              roomClients.player1.id = socket.id;
-              console.log("Client(s) in the room: "+clients);
-              io.emit("waiting", "waiting for another opponent...");
-            } else {
-              roomClients.player2.id = socket.id;
-              console.log("Client(s) in the room: "+clients);
-              io.emit("waiting", "waiting for another opponent...");
-            }
-            
-          } else if (clients.length === 2) {
-            if (roomClients.player2.id === "") {
-              roomClients.player2.id = socket.id;
-              console.log("Client(s) in the room: "+clients);
-              io.emit("connected", "connection success");
-              randomRoles();
-              io.to(clients[0]).emit("char",roomClients.player1.role);
-              io.to(clients[1]).emit("char",roomClients.player2.role);
-              console.log(roomClients);
-              randomBoard();
-              io.emit("board", board);
-              // change to send array of randomed field
-              io.to(roomClients.player1).emit("start", "start match");
-            } else {
-              roomClients.player1.id = socket.id;
-              console.log("Client(s) in the room: "+clients);
-              io.emit("connected", "connection success");
-              randomRoles();
-              io.to(clients[0]).emit("char",roomClients.player2.role);
-              io.to(clients[1]).emit("char",roomClients.player1.role);
-              console.log(roomClients);
-              randomBoard();
-              io.emit("board", board);
-              // change to send array of randomed field
-              io.to(clients[0]).emit("start", "start match");
-              io.to(clients[1]).emit("start", "start match");
-              if(roomClients.player1.role == "warden") {
-                io.to(roomClients.player1.id).emit("turn", "warden");
-              } else if(roomClients.player2.role == "warden") {
-                io.to(roomClients.player2.id).emit("turn", "warden");
+      io.of('/').in('room').clients((error, clients) => {
+        if (error) throw error;
+        if(clients.length == 2) {
+          socket.emit('full', "The room is currently full");
+        } else {
+          socket.join('room', () => {
+            let rooms = Object.keys(socket.rooms);
+            console.log(rooms);
+            if(clients.length === 1) {
+              if(roomClients.player1.id === "") {
+                roomClients.player1.id = socket.id;
+                console.log("Client(s) in the room: "+clients);
+                io.emit("waiting", "waiting for another opponent...");
+              } else {
+                roomClients.player2.id = socket.id;
+                console.log("Client(s) in the room: "+clients);
+                io.emit("waiting", "waiting for another opponent...");
               }
-            }  
-          };
-        });
-      });
+              
+            } else if (clients.length === 2) {
+              if (roomClients.player2.id === "") {
+                roomClients.player2.id = socket.id;
+                console.log("Client(s) in the room: "+clients);
+                io.emit("connected", "connection success");
+                randomRoles();
+                io.to(clients[0]).emit("char",roomClients.player1.role);
+                io.to(clients[1]).emit("char",roomClients.player2.role);
+                console.log(roomClients);
+                randomBoard();
+                io.emit("board", board);
+                // change to send array of randomed field
+                io.to(roomClients.player1).emit("start", "start match");
+              } else {
+                roomClients.player1.id = socket.id;
+                console.log("Client(s) in the room: "+clients);
+                io.emit("connected", "connection success");
+                randomRoles();
+                io.to(clients[0]).emit("char",roomClients.player2.role);
+                io.to(clients[1]).emit("char",roomClients.player1.role);
+                console.log(roomClients);
+                randomBoard();
+                io.emit("board", board);
+                // change to send array of randomed field
+                io.to(clients[0]).emit("start", "start match");
+                io.to(clients[1]).emit("start", "start match");
+                if(roomClients.player1.role == "warden") {
+                  io.to(roomClients.player1.id).emit("turn", "warden");
+                } else if(roomClients.player2.role == "warden") {
+                  io.to(roomClients.player2.id).emit("turn", "warden");
+                }
+              }  
+            };
+          });
+        }
+        
+      })
+      
     }
     if (message === "leave") {
       socket.leave('room', () => {
