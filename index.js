@@ -480,6 +480,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[0] - board.wardenindex[0] == -1 && board.tunnelindex[1] - board.wardenindex[1] == 0) 
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
+            io.emit("board", board);
             console.log("emit ('err','invalid move')")
             console.log("invalid move");
           } else {
