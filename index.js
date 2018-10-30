@@ -179,8 +179,19 @@ io.on("connection", function(socket) {
                   io.emit("board", board);
                   console.log("emit 'board'");
                   // change to send array of randomed field
-                  io.to(roomClients.player1).emit("start", "start match");
-                  console.log("emit 'start'");
+                  io.to(clients[0]).emit("start", "start match");
+                  console.log("emit 'start' to player1");
+                  io.to(clients[1]).emit("start", "start match");
+                  console.log("emit 'start' to player2");
+                  socket.on("ready", () => {
+                    if(roomClients.player1.role == "warden") {
+                      io.to(roomClients.player1.id).emit("turn", "warden");
+                      console.log("emit 'turn' to player1");
+                    } else if(roomClients.player2.role == "warden") {
+                      io.to(roomClients.player2.id).emit("turn", "warden");
+                      console.log("emit 'turn' to player2");
+                    }
+                  })
                 } else {
                   roomClients.player1.id = socket.id;
                   console.log("Client(s) in the room: "+clients);
@@ -207,7 +218,7 @@ io.on("connection", function(socket) {
                       console.log("emit 'turn' to player1");
                     } else if(roomClients.player2.role == "warden") {
                       io.to(roomClients.player2.id).emit("turn", "warden");
-                      console.log("emit 'turn' to player1");
+                      console.log("emit 'turn' to player2");
                     }
                   })
                 }  
@@ -467,6 +478,7 @@ io.on("connection", function(socket) {
               
             } else {
               io.emit("turn", "warden");
+              console.log("emit 'turn'")
               console.log("emit 'warden'")
             }
           }
@@ -617,7 +629,7 @@ io.on("connection", function(socket) {
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'prisoner'")
+              console.log("emit 'turn'")
             }
           }
         }
