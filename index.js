@@ -154,7 +154,7 @@ io.on("connection", function(socket) {
         if (error) throw error;
         if(clients.length === roomLimit) {
           socket.emit('full', "The room is currently full");
-          console.log("emit 'full'");
+          console.log("emit 'full' (156)");
         } else {
           socket.join('room', () => {
             console.log(socket.id+" joined the room");
@@ -165,12 +165,12 @@ io.on("connection", function(socket) {
                   roomClients.player1.id = socket.id;
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
-                  console.log("emit 'waiting'");
+                  console.log("emit 'waiting' (167)");
                 } else if (roomClients.player2.id === ""){
                   roomClients.player2.id = socket.id;
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
-                  console.log("emit 'waiting'");
+                  console.log("emit 'waiting' (172)");
                 }
                 console.log(roomClients);
                 
@@ -179,58 +179,58 @@ io.on("connection", function(socket) {
                   roomClients.player2.id = socket.id;
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
-                  console.log("emit 'connected'");
+                  console.log("emit 'connected' (181)");
                   randomRoles();
                   console.log(clients);
                   io.to(clients[0]).emit("char",roomClients.player1.role);
-                  console.log("emit 'char' to player1");
+                  console.log("emit 'char' to player1 (185)");
                   io.to(clients[1]).emit("char",roomClients.player2.role);
-                  console.log("emit 'char' to player2");
+                  console.log("emit 'char' to player2 (187)");
                   console.log(roomClients);
                   randomBoard();
                   io.emit("board", board);
-                  console.log("emit 'board'");
+                  console.log("emit 'board' (191)");
                   // change to send array of randomed field
                   io.to(clients[0]).emit("start", "start match");
-                  console.log("emit 'start' to player1");
+                  console.log("emit 'start' to player1 (194)");
                   io.to(clients[1]).emit("start", "start match");
-                  console.log("emit 'start' to player2");
+                  console.log("emit 'start' to player2 (196)");
                   socket.on("ready", () => {
                     if(roomClients.player1.role == "warden") {
                       io.to(roomClients.player1.id).emit("turn", "warden");
-                      console.log("emit 'turn' to player1");
+                      console.log("emit 'turn' to player1 (200)");
                     } else if(roomClients.player2.role == "warden") {
                       io.to(roomClients.player2.id).emit("turn", "warden");
-                      console.log("emit 'turn' to player2");
+                      console.log("emit 'turn' to player2 (203)");
                     }
                   })
                 } else {
                   roomClients.player1.id = socket.id;
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
-                  console.log("emit 'connected'");
+                  console.log("emit 'connected' (210)");
                   randomRoles();
                   io.to(clients[0]).emit("char",roomClients.player2.role);
-                  console.log("emit 'char' to player1");
+                  console.log("emit 'char' to player1 (213)");
                   io.to(clients[1]).emit("char",roomClients.player1.role);
-                  console.log("emit 'char' to player2");
+                  console.log("emit 'char' to player2 (215)");
                   console.log(roomClients);
                   randomBoard();
                   console.log(board);
                   io.emit("board", board);
-                  console.log("emit 'board'");
+                  console.log("emit 'board' (220)");
                   // change to send array of randomed field
                   io.to(clients[0]).emit("start", "start match");
-                  console.log("emit 'start' to player1");
+                  console.log("emit 'start' to player1 (223)");
                   io.to(clients[1]).emit("start", "start match");
-                  console.log("emit 'start' to player2");
+                  console.log("emit 'start' to player2 (225)");
                   socket.on("ready", () => {
                     if(roomClients.player1.role == "warden") {
                       io.to(roomClients.player1.id).emit("turn", "warden");
-                      console.log("emit 'turn' to player1");
+                      console.log("emit 'turn' to player1 (229)");
                     } else if(roomClients.player2.role == "warden") {
                       io.to(roomClients.player2.id).emit("turn", "warden");
-                      console.log("emit 'turn' to player2");
+                      console.log("emit 'turn' to player2 (233)");
                     }
                   })
                 }  
@@ -255,7 +255,7 @@ io.on("connection", function(socket) {
       console.log(roomClients);
       io.of('/').in('room').clients((error, clients) => {
         io.to(clients[0]).emit("waiting", "waiting for another opponent...")
-        console.log("emit 'waiting'");
+        console.log("emit 'waiting' (257)");
       });
     }
   })
@@ -288,7 +288,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][0] - board.prisonerindex[0] == 1 && board.obstacleindex[4][1] - board.prisonerindex[1] == 0)
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')");
+            console.log("emit ('err','invalid move') (290)");
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -296,18 +296,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[0]++;
             console.log("prisoner movedown")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (298)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (301)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (305)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (309)")
             }
           }
         } else if(roomClients.player1.role === "warden") {
@@ -319,7 +319,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[0] - board.wardenindex[0] == 1 && board.tunnelindex[1] - board.wardenindex[1] == 0) 
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move'")
+            console.log("emit ('err','invalid move' (321)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -327,14 +327,14 @@ io.on("connection", function(socket) {
             board.wardenindex[0]++;
             console.log("warden movedown");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (329)")
             if(isEqual(board.wardenindex,board.prisonerindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (332)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (336)")
             }
           }
         }
@@ -348,7 +348,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][0] - board.prisonerindex[0] == 1 && board.obstacleindex[4][1] - board.prisonerindex[1] == 0)
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (350)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -356,18 +356,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[0]++;
             console.log("prisoner movedown")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (358)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (361)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (365)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (369)")
             }
           }
         
@@ -380,7 +380,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[0] - board.wardenindex[0] == 1 && board.tunnelindex[1] - board.wardenindex[1] == 0) 
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (382)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -388,14 +388,14 @@ io.on("connection", function(socket) {
             board.wardenindex[0]++;
             console.log("warden movedown")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (390)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (393)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (397)")
             }
           }
         }
@@ -411,7 +411,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][0] - board.prisonerindex[0] == -1 && board.obstacleindex[4][1] - board.prisonerindex[1] == 0)
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (413)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -419,18 +419,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[0]--;
             console.log("prisoner moveup");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (421)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (424)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (428)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (432)")
             }
           }
         } else if(roomClients.player1.role === "warden") {
@@ -442,7 +442,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[0] - board.wardenindex[0] == -1 && board.tunnelindex[1] - board.wardenindex[1] == 0) 
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (444)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -450,14 +450,14 @@ io.on("connection", function(socket) {
             board.wardenindex[0]--;
             console.log("warden moveup")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (452)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (456)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (459)")
             }
           }
         }
@@ -470,7 +470,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][0] - board.prisonerindex[0] == -1 && board.obstacleindex[4][1] - board.prisonerindex[1] == 0)
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (472)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -478,20 +478,19 @@ io.on("connection", function(socket) {
             board.prisonerindex[0]--;
             console.log("warden moveup")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (480)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (483)")
               console.log("prisoner win")
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (487)")
               console.log("warden win");
               
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
-              console.log("emit 'warden'")
+              console.log("emit 'turn' (492)")
             }
           }
 
@@ -511,14 +510,14 @@ io.on("connection", function(socket) {
             board.wardenindex[0]--;
             console.log("warden moveup")
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (512)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (515)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (519)")
             }
           }
         }
@@ -534,7 +533,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][1] - board.prisonerindex[1] == -1 && board.obstacleindex[4][0] - board.prisonerindex[0] == 0) 
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (535)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -542,18 +541,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[1]--;
             console.log("prisoner moveleft");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (543)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (546)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (550)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (554)")
             }
           }
           
@@ -566,7 +565,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[1] - board.wardenindex[1] == -1 && board.tunnelindex[0]-board.wardenindex[0]==0) 
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (567)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -574,14 +573,14 @@ io.on("connection", function(socket) {
             board.wardenindex[1]--;
             console.log("warden moveleft");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (575)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (578)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (582)")
             }
           }
         }
@@ -594,7 +593,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][1] - board.prisonerindex[1] == -1 && board.obstacleindex[4][0] - board.prisonerindex[0] == 0) 
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move'")
+            console.log("emit ('err','invalid move' (595)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -602,18 +601,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[1]--;
             console.log("prisoner moveleft");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (603)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (606)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (610)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (614)")
             }
           }
           
@@ -626,7 +625,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[1] - board.wardenindex[1] == -1 && board.tunnelindex[0]-board.wardenindex[0]==0) 
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (627)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -634,14 +633,14 @@ io.on("connection", function(socket) {
             board.wardenindex[1]--;
             console.log("warden moveleft");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (635)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (638)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (642)")
             }
           }
         }
@@ -657,7 +656,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][1] - board.prisonerindex[1] == 1 && board.obstacleindex[4][0] - board.prisonerindex[0] == 0) 
           ){            
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move'")
+            console.log("emit ('err','invalid move' (658)")
             // io.emit("board", board)
             // console.log("emit 'board'")
             console.log("invalid move");;
@@ -665,18 +664,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[1]++;
             console.log("prisoner moveright");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (666)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (669)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (673)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (677)")
             }
           }
           
@@ -689,7 +688,7 @@ io.on("connection", function(socket) {
           || (board.tunnelindex[1] - board.wardenindex[1] == 1 && board.tunnelindex[0]-board.wardenindex[0]==0) 
           ){
             io.to(roomClients.player1.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move')")
+            console.log("emit ('err','invalid move') (691")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -697,14 +696,14 @@ io.on("connection", function(socket) {
             board.wardenindex[1]++;
             console.log("warden moveright");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (698)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (701)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (705)")
             }
           }
         }
@@ -717,7 +716,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][1] - board.prisonerindex[1] == 1 && board.obstacleindex[4][0] - board.prisonerindex[0] == 0) 
           ){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move'")
+            console.log("emit ('err','invalid move' (718)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -725,18 +724,18 @@ io.on("connection", function(socket) {
             board.prisonerindex[1]++;
             console.log("prisoner moveright");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (726)")
             if(isEqual(board.prisonerindex,board.tunnelindex)) {
               io.emit("winner","prisoner");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (729)")
               console.log("prisoner win");
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (733)")
               console.log("warden win");
             } else {
               io.emit("turn", "warden");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (737)")
             }
           }
           
@@ -748,7 +747,7 @@ io.on("connection", function(socket) {
           || (board.obstacleindex[4][1] - board.wardenindex[1] == 1 && board.obstacleindex[4][0] - board.wardenindex[0] == 0)
           || (board.tunnelindex[1] - board.wardenindex[1] == 1 && board.tunnelindex[0]-board.wardenindex[0]==0)){
             io.to(roomClients.player2.id).emit("err", "Invalid move");
-            console.log("emit ('err','invalid move'")
+            console.log("emit ('err','invalid move') (749)")
             // io.emit("board", board);
             // console.log("emit 'board'")
             console.log("invalid move");
@@ -756,14 +755,14 @@ io.on("connection", function(socket) {
             board.wardenindex[1]++;
             console.log("warden moveright");
             io.emit("board", board);
-            console.log("emit 'board'")
+            console.log("emit 'board' (757)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               io.emit("winner","warden");
-              console.log("emit 'winner'")
+              console.log("emit 'winner' (760)")
               console.log("warden win");
             } else {
               io.emit("turn", "prisoner");
-              console.log("emit 'turn'")
+              console.log("emit 'turn' (764)")
             }
           }
         }
@@ -773,29 +772,29 @@ io.on("connection", function(socket) {
         if(roomClients.player1.role === "prisoner") {
           console.log("prisoner skip");
           io.emit("board", board);
-          console.log("emit 'board'");
+          console.log("emit 'board' (774)");
           io.emit("turn","warden");
-          console.log("emit 'turn'");
+          console.log("emit 'turn' (776)");
         } else if(roomClients.player1.role === "warden") {
           console.log("warden skip");
           io.emit("board", board);
-          console.log("emit 'board'");
+          console.log("emit 'board' (780)");
           io.emit("turn","prisoner");
-          console.log("emit 'turn'");
+          console.log("emit 'turn' (782)");
         }
       } else if(roomClients.player2.id === socket.id) {
         if(roomClients.player2.role === "prisoner") {
           console.log("prisoner skip");
           io.emit("board", board);
-          console.log("emit 'board'");
+          console.log("emit 'board' (788)");
           io.emit("turn","warden");
-          console.log("emit 'turn'");
+          console.log("emit 'turn' (790)");
         } else if(roomClients.player2.role === "warden") {
           console.log("warden skip");
           io.emit("board", board);
-          console.log("emit 'board'");
+          console.log("emit 'board' (794)");
           io.emit("turn","prisoner");
-          console.log("emit 'turn'");
+          console.log("emit 'turn' (796)");
         }
       }
     }
