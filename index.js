@@ -600,7 +600,7 @@ io.on("connection", function(socket) {
             console.log("emit 'board' (592)")
             if(isEqual(board.prisonerindex,board.wardenindex)) {
               winner("warden");
-              cconsole.log("emit from winner() (602)")
+              console.log("emit from winner() (602)")
               console.log("warden win");
               console.log("Player1: "+roomClients.player1.point+", Player2 :"+roomClients.player2.point);
             } else {
