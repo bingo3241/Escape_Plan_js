@@ -259,11 +259,17 @@ io.on("connection", function(socket) {
         roomClients.player1.id = '';
         roomClients.player1.role = '';
         roomClients.player1.point = 0;
+        io.to(roomClients.player2.id).emit("clear", "someone leave");
+        console.log("emit 'clear' to player2 (269)")
       } else if(roomClients.player2.id === socket.id) {
         roomClients.player2.id = '';
         roomClients.player2.role = '';
         roomClients.player2.point = 0;
+        io.to(roomClients.player1.id).emit("clear", "someone leave");
+        console.log("emit 'clear' to player1 (267)")
       }
+      
+      
       console.log(roomClients);
       console.log('(265)')
       io.of('/').in('room').clients((error, clients) => {
