@@ -258,9 +258,11 @@ io.on("connection", function(socket) {
       if(roomClients.player1.id === socket.id) {
         roomClients.player1.id = '';
         roomClients.player1.role = '';
+        roomClients.player1.point = 0;
       } else if(roomClients.player2.id === socket.id) {
         roomClients.player2.id = '';
         roomClients.player2.role = '';
+        roomClients.player2.point = 0;
       }
       console.log(roomClients);
       console.log('(265)')
