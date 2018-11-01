@@ -263,6 +263,7 @@ io.on("connection", function(socket) {
         roomClients.player2.role = '';
       }
       console.log(roomClients);
+      console.log('(265)')
       io.of('/').in('room').clients((error, clients) => {
         io.to(clients[0]).emit("waiting", "waiting for another opponent...")
         console.log("emit 'waiting' (260)");
@@ -845,7 +846,7 @@ io.on("connection", function(socket) {
       roomClients.player2.role = '';
     }
     console.log(roomClients);
-    
+    console.log('(848)')
   });
 });
 
