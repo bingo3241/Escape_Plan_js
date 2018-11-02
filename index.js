@@ -883,34 +883,35 @@ io.on("connection", function(socket) {
       rematchPlayer2 = true;
     }
     if(rematchPlayer1 == true && rematchPlayer2 == true) {
-      randomRoles();
-      console.log(clients);
-      io.to(clients[0]).emit("char",roomClients.player1.role);
-      console.log("emit 'char' to player1 (197)");
-      io.to(clients[1]).emit("char",roomClients.player2.role);
-      console.log("emit 'char' to player2 (199)");
-      console.log(roomClients);
-      console.log("(197)")
-      randomBoard();
-      io.emit("board", board);
-      console.log(board);
-      console.log("emit 'board' (203)");
-      // change to send array of randomed field
-      io.to(clients[0]).emit("start", "start match");
-      console.log("emit 'start' to player1 (206)");
-      io.to(clients[1]).emit("start", "start match");
-      console.log("emit 'start' to player2 (205)");
-      socket.on("ready", () => {
-        if(roomClients.player1.role == "warden") {
-          io.to(roomClients.player1.id).emit("turn", "warden");
-          console.log("emit 'turn' to player1 (212)");
-        } else if(roomClients.player2.role == "warden") {
-          io.to(roomClients.player2.id).emit("turn", "warden");
-          console.log("emit 'turn' to player2 (215)");
-        }
+      io.of('/').in('room').clients((error, clients) => {
+        randomRoles();
+        console.log(clients);
+        io.to(clients[0]).emit("char",roomClients.player1.role);
+        console.log("emit 'char' to player1 (197)");
+        io.to(clients[1]).emit("char",roomClients.player2.role);
+        console.log("emit 'char' to player2 (199)");
+        console.log(roomClients);
+        console.log("(197)")
+        randomBoard();
+        io.emit("board", board);
+        console.log(board);
+        console.log("emit 'board' (203)");
+        // change to send array of randomed field
+        io.to(clients[0]).emit("start", "start match");
+        console.log("emit 'start' to player1 (206)");
+        io.to(clients[1]).emit("start", "start match");
+        console.log("emit 'start' to player2 (205)");
+        socket.on("ready", () => {
+          if(roomClients.player1.role == "warden") {
+            io.to(roomClients.player1.id).emit("turn", "warden");
+            console.log("emit 'turn' to player1 (212)");
+          } else if(roomClients.player2.role == "warden") {
+            io.to(roomClients.player2.id).emit("turn", "warden");
+            console.log("emit 'turn' to player2 (215)");
+          }
+        })
       })
     }
-    
   });
   
   socket.on("surrender", () => {
@@ -922,9 +923,11 @@ io.on("connection", function(socket) {
     }
     if(rematchPlayer1 == false) {
       io.to(roomClients.player2).emit("win"," Opponent give up. You win!")
+      console.log("emit 'win' to player2")
   
     } else if(rematchPlayer2 == false) {
       io.to(roomClients.player1).emit("win"," Opponent give up. You win!")
+      console.log("emit 'win' to player2")
     }
   });
 });
@@ -941,7 +944,7 @@ function winner(role) {
     "points":[],
     "winner":""
   }
-  
+
   result.winner = role;
 
   if(roomClients.player1.role == role) {
@@ -971,6 +974,7 @@ function winner(role) {
       result.points[1] = roomClients.player2.point;
     }
   }
+  
   io.emit("winner",result);
   console.log("emit 'winner'");
 }
