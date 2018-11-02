@@ -876,8 +876,6 @@ io.on("connection", function(socket) {
   });
 
   socket.on("rematch", () => {
-    rematchPlayer1 = null;
-    rematchPlayer2 = null;
     if(socket.id == roomClients.player1.id) {
       rematchPlayer1 = true;
     }
@@ -914,6 +912,8 @@ io.on("connection", function(socket) {
         })
       })
     }
+    rematchPlayer1 = null;
+    rematchPlayer2 = null;
   });
   
   socket.on("surrender", () => {
@@ -931,6 +931,8 @@ io.on("connection", function(socket) {
       io.to(roomClients.player1).emit("win"," Opponent give up. You win!")
       console.log("emit 'win' to player2")
     }
+    rematchPlayer1 = null;
+    rematchPlayer2 = null;
   });
 });
 
