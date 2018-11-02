@@ -941,6 +941,9 @@ function winner(role) {
     "points":[],
     "winner":""
   }
+  
+  result.winner = role;
+
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
     if(role == "prisoner") {
@@ -948,14 +951,11 @@ function winner(role) {
       result.roles[1] = "warden"
       result.points[0] = roomClients.player1.point;
       result.points[1] = roomClients.player2.point;
-      result.winner = "prisoner";
     } else if(role == "warden") {
       result.roles[0] = "prisoner"
       result.roles[1] = role
       result.points[0] = roomClients.player2.point;
       result.points[1] = roomClients.player1.point;
-      result.winner = "prisoner";
-
     }
   } else if(roomClients.player2.role == role) {
     roomClients.player2.point = roomClients.player2.point+1;
