@@ -936,14 +936,39 @@ http.listen(3000, function() {
 });
 
 function winner(role) {
+  var result = {
+    "roles":[],
+    "points":[]
+  }
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
-    io.emit("winner",roomClients.player1)
-    
+    if(role == "prisoner") {
+      result.roles[0] = role;
+      result.roles[1] = "warden"
+      result.points[0] = roomClients.player1.point;
+      result.points[1] = roomClients.player2.point;
+    } else if(role == "warden") {
+      result.roles[0] = "prisoner"
+      result.roles[1] = role
+      result.points[0] = roomClients.player2.point;
+      result.points[1] = roomClients.player1.point;
+
+    }
   } else if(roomClients.player2.role == role) {
     roomClients.player2.point = roomClients.player2.point+1;
-    io.emit("winner",roomClients.player2)
+    if(role == "prisoner") {
+      result.roles[0] = role;
+      result.roles[1] = "warden"
+      result.points[0] = roomClients.player2.point;
+      result.points[1] = roomClients.player1.point;
+    } else if(role == "warden") {
+      result.roles[0] = "prisoner"
+      result.roles[1] = role
+      result.points[0] = roomClients.player1.point;
+      result.points[1] = roomClients.player2.point;
+    }
   }
-
+  io.emit("winner",result);
+  console.log("emit 'winner'");
 }
 
