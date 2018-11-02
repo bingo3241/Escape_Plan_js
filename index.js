@@ -939,7 +939,7 @@ function winner(role) {
   var result = {
     "roles":[],
     "points":[],
-    "winner":any
+    "winner":""
   }
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
