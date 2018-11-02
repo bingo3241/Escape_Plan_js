@@ -23,10 +23,8 @@ var board = {
   "tunnelindex":[,],
   "obstacleindex":[]
 }
-var rematch = {
-  "player1":any,
-  "player2":any,
-}
+var rematchPlayer1;
+var rematchPlayer2;
 // var path = require('path');
 function randomRoles() {
   if(Math.random() < 0.5) {
@@ -880,12 +878,12 @@ io.on("connection", function(socket) {
 
 socket.on("rematch", () => {
   if(socket.id == roomClients.player1.id) {
-    rematch.player1 = true;
+    rematchPlayer1 = true;
   }
   if(socket.id == roomClients.player2.id) {
-    rematch.player2 = true;
+    rematchPlayer2 = true;
   }
-  if(rematch.player1 == true && rematch.player2 == true) {
+  if(rematchPlayer1 == true && rematchPlayer2 == true) {
     randomRoles();
     console.log(clients);
     io.to(clients[0]).emit("char",roomClients.player1.role);
@@ -918,15 +916,15 @@ socket.on("rematch", () => {
 
 socket.on("surrender", () => {
   if(socket.id == roomClients.player1.id) {
-    rematch.player1 = false;
+    rematchPlayer1 = false;
   }
   if(socket.id == roomClients.player2.id) {
-    rematch.player2 = false;
+    rematchPlayer2 = false;
   }
-  if(rematch.player1 == false) {
+  if(rematchPlayer1 == false) {
     io.to(roomClients.player2).emit("win"," Opponent give up. You win!")
 
-  } else if(rematch.player2 == false) {
+  } else if(rematchPlayer2 == false) {
     io.to(roomClients.player1).emit("win"," Opponent give up. You win!")
   }
 })
