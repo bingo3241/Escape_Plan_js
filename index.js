@@ -786,7 +786,6 @@ io.on("connection", function(socket) {
               console.log("prisoner win");
               console.log("Player1: "+roomClients.player1.point+", Player2 :"+roomClients.player2.point);
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
-              io.emit("winner","warden");
               winner("warden");
               console.log("emit from winner() (766)")
               console.log("warden win");
@@ -882,13 +881,11 @@ http.listen(3000, function() {
 function winner(role) {
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
-    io.to(roomClients.player1.id).emit("winner",roomClients.player1)
-    io.to(roomClients.player2.id).emit("loser",roomClients.player2)
+    io.emit("winner",roomClients.player1)
     
   } else if(roomClients.player2.role == role) {
     roomClients.player2.point = roomClients.player2.point+1;
-    io.to(roomClients.player2.id).emit("winner",roomClients.player2)
-    io.to(roomClients.player1.id).emit("loser",roomClients.player1)
+    io.emit("winner",roomClients.player2)
   }
 
 }
