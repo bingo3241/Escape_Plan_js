@@ -23,6 +23,10 @@ var board = {
   "tunnelindex":[,],
   "obstacleindex":[]
 }
+var rematch = {
+  "player1":any,
+  "player2":any,
+}
 // var path = require('path');
 function randomRoles() {
   if(Math.random() < 0.5) {
@@ -873,6 +877,54 @@ io.on("connection", function(socket) {
     console.log('(848)')
   });
 });
+
+socket.on("rematch", () => {
+  if(socket.id == roomClients.player1.id) {
+    rematch.player1 = true;
+  }
+  if(socket.id == roomClients.player2.id) {
+    rematch.player2 = true;
+  }
+  if(rematch.player1 == true && rematch.player2 == true) {
+    randomRoles();
+    console.log(clients);
+    io.to(clients[0]).emit("char",roomClients.player1.role);
+    console.log("emit 'char' to player1 (197)");
+    io.to(clients[1]).emit("char",roomClients.player2.role);
+    console.log("emit 'char' to player2 (199)");
+    console.log(roomClients);
+    console.log("(197)")
+    randomBoard();
+    io.emit("board", board);
+    console.log(board);
+    console.log("emit 'board' (203)");
+    // change to send array of randomed field
+    io.to(clients[0]).emit("start", "start match");
+    console.log("emit 'start' to player1 (206)");
+    io.to(clients[1]).emit("start", "start match");
+    console.log("emit 'start' to player2 (205)");
+    socket.on("ready", () => {
+      if(roomClients.player1.role == "warden") {
+        io.to(roomClients.player1.id).emit("turn", "warden");
+        console.log("emit 'turn' to player1 (212)");
+      } else if(roomClients.player2.role == "warden") {
+        io.to(roomClients.player2.id).emit("turn", "warden");
+        console.log("emit 'turn' to player2 (215)");
+      }
+    })
+  }
+  
+});
+
+socket.on("surrender", () => {
+  if(socket.id == roomClients.player1.id) {
+    rematch.player1 = false;
+  }
+  if(socket.id == roomClients.player2.id) {
+    rematch.player2 = false;
+  }
+  if(rematch.player1 == false && rematch.player2 == false)
+})
 
 http.listen(3000, function() {
   console.log("server listening on port 3000");
