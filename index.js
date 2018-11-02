@@ -97,11 +97,11 @@ function randomBoard() {
 
   //obstacle2
   var obs2 = [,];
-  var obs2num = Math.floor(Math.random()*24);
+  var obs2num = Math.floor(Math.random()*25);
   obs2[0] = Math.floor(obs2num/5);
   obs2[1] = obs2num%5;
   while(obs2num == tunnelnum || obs2num == wardennum || obs2num == prisonernum || obs2num == obs1num) {obs1num = Math.round(Math.random()*25);
-    obs2num = Math.floor(Math.random()*24);
+    obs2num = Math.floor(Math.random()*25);
     obs2[0] = Math.floor(obs2num/5);
     obs2[1] = obs2num%5;
   }
