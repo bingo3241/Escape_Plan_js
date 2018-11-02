@@ -934,10 +934,15 @@ function winner(role) {
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
     io.emit("winner",roomClients.player1)
-    
+    console.log("emit 'winner' , args:")
+    console.log(roomClients.player1)
+    console.log("(854)")
   } else if(roomClients.player2.role == role) {
     roomClients.player2.point = roomClients.player2.point+1;
     io.emit("winner",roomClients.player2)
+    console.log("emit 'winner' , args:")
+    console.log(roomClients.player2)
+    console.log("(890)")
   }
 
 }
