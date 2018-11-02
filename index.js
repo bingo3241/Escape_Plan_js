@@ -876,6 +876,8 @@ io.on("connection", function(socket) {
   });
 
   socket.on("rematch", () => {
+    rematchPlayer1 = null;
+    rematchPlayer2 = null;
     if(socket.id == roomClients.player1.id) {
       rematchPlayer1 = true;
     }
