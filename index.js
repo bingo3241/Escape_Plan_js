@@ -911,9 +911,9 @@ io.on("connection", function(socket) {
           }
         })
       })
+      rematchPlayer1 = null;
+      rematchPlayer2 = null;
     }
-    rematchPlayer1 = null;
-    rematchPlayer2 = null;
   });
   
   socket.on("surrender", () => {
@@ -926,13 +926,15 @@ io.on("connection", function(socket) {
     if(rematchPlayer1 == false) {
       io.to(roomClients.player2).emit("win"," Opponent give up. You win!")
       console.log("emit 'win' to player2")
+      rematchPlayer1 = null;
+      rematchPlayer2 = null;
   
     } else if(rematchPlayer2 == false) {
       io.to(roomClients.player1).emit("win"," Opponent give up. You win!")
       console.log("emit 'win' to player2")
+      rematchPlayer1 = null;
+      rematchPlayer2 = null;
     }
-    rematchPlayer1 = null;
-    rematchPlayer2 = null;
   });
 });
 
