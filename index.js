@@ -174,11 +174,17 @@ io.on("connection", function(socket) {
               if(clients.length === 1) {
                 if(roomClients.player1.id === "") {
                   roomClients.player1.id = socket.id;
+                  socket.on("name", (playername) => {
+                    roomClients.player1.name = playername;
+                  })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
                   console.log("emit 'waiting' (169)");
                 } else if (roomClients.player2.id === ""){
                   roomClients.player2.id = socket.id;
+                  socket.on("name", (playername) => {
+                    roomClients.player2.name = playername;
+                  })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
                   console.log("emit 'waiting' (183)");
@@ -187,6 +193,9 @@ io.on("connection", function(socket) {
               } else if (clients.length === 2) {
                 if (roomClients.player2.id === "") {
                   roomClients.player2.id = socket.id;
+                  socket.on("name", (playername) => {
+                    roomClients.player2.name = playername;
+                  })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
                   console.log("emit 'connected' (193)");
@@ -218,6 +227,9 @@ io.on("connection", function(socket) {
                   })
                 } else {
                   roomClients.player1.id = socket.id;
+                  socket.on("name", (playername) => {
+                    roomClients.player1.name = playername;
+                  })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
                   console.log("emit 'connected' (222)");
@@ -249,10 +261,8 @@ io.on("connection", function(socket) {
               };
             })
           });
-        }
-        
-      })
-      
+        }   
+      })  
     }
     if (message === "leave") {
       console.log(socket.id+" left the room");
@@ -952,7 +962,6 @@ function winner(role) {
   }
 
   result.winner = role;
-
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
     if(role == "prisoner") {
