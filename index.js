@@ -176,6 +176,7 @@ io.on("connection", function(socket) {
                   roomClients.player1.id = socket.id;
                   socket.on("name", (playername) => {
                     roomClients.player1.name = playername;
+                    console.log("set player1's name to "+playername);
                   })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
@@ -184,6 +185,7 @@ io.on("connection", function(socket) {
                   roomClients.player2.id = socket.id;
                   socket.on("name", (playername) => {
                     roomClients.player2.name = playername;
+                    console.log("set player2's name to "+playername);
                   })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("waiting", "waiting for another opponent...");
@@ -195,6 +197,7 @@ io.on("connection", function(socket) {
                   roomClients.player2.id = socket.id;
                   socket.on("name", (playername) => {
                     roomClients.player2.name = playername;
+                    console.log("set player2's name to "+playername);
                   })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
@@ -229,6 +232,7 @@ io.on("connection", function(socket) {
                   roomClients.player1.id = socket.id;
                   socket.on("name", (playername) => {
                     roomClients.player1.name = playername;
+                    console.log("set player1's name to "+playername);
                   })
                   console.log("Client(s) in the room: "+clients);
                   io.emit("connected", "connection success");
@@ -261,7 +265,8 @@ io.on("connection", function(socket) {
               };
             })
           });
-        }   
+        }
+        
       })  
     }
     if (message === "leave") {
@@ -956,6 +961,7 @@ http.listen(3000, function() {
 
 function winner(role) {
   var result = {
+    "name":[],
     "roles":[],
     "points":[],
     "winner":""
@@ -965,11 +971,15 @@ function winner(role) {
   if(roomClients.player1.role == role) {
     roomClients.player1.point = roomClients.player1.point+1;
     if(role == "prisoner") {
+      result.name[0] = roomClients.player1.name;
+      result.name[1] = roomClients.player2.name;
       result.roles[0] = role;
       result.roles[1] = "warden"
       result.points[0] = roomClients.player1.point;
       result.points[1] = roomClients.player2.point;
     } else if(role == "warden") {
+      result.name[0] = roomClients.player1.name;
+      result.name[1] = roomClients.player2.name;
       result.roles[0] = "prisoner"
       result.roles[1] = role
       result.points[0] = roomClients.player2.point;
@@ -978,11 +988,15 @@ function winner(role) {
   } else if(roomClients.player2.role == role) {
     roomClients.player2.point = roomClients.player2.point+1;
     if(role == "prisoner") {
+      result.name[0] = roomClients.player1.name;
+      result.name[1] = roomClients.player2.name;
       result.roles[0] = role;
       result.roles[1] = "warden"
       result.points[0] = roomClients.player2.point;
       result.points[1] = roomClients.player1.point;
     } else if(role == "warden") {
+      result.name[0] = roomClients.player1.name;
+      result.name[1] = roomClients.player2.name;
       result.roles[0] = "prisoner"
       result.roles[1] = role
       result.points[0] = roomClients.player1.point;
