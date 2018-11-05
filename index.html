@@ -6,10 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Node Socket</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+    </script>
 </head>
 <body>
-    <h1>Hello Socket</h1>
     <button onclick="reset();">Reset!</button>
+    <ul id="div1">
+        <li>Game Log:</li>
+    </ul>
+    <script>
+            var socket = io();
+            socket.on('log', function(msg){
+               var node = document.createElement("LI");
+               var textnode = document.createTextNode(msg);
+               node.appendChild(textnode);
+               document.getElementById("div1").appendChild(node);
+            });
+    </script>
     <script src="index.js"></script>
+
 </body>
 </html>
