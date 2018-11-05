@@ -228,7 +228,7 @@ io.on("connection", function(socket) {
                     io.emit('log',"emit 'char' to player2 (199)");
                     randomBoard();
                     io.emit("board", board);
-                    io.emit('log',board);
+                    io.emit('log',JSON.stringify(board));
                     io.emit('log',"emit 'board' (203)");
                     // change to send array of randomed field
                     io.to(clients[0]).emit("start", "start match");
@@ -262,7 +262,7 @@ io.on("connection", function(socket) {
                     randomBoard();
                     io.emit("board", board);
                     io.emit('log',"emit 'board' (232)");
-                    io.emit('log',board);
+                    io.emit('log',JSON.stringify(board));
                     // change to send array of randomed field
                     io.to(clients[0]).emit("start", "start match");
                     io.emit('log',"emit 'start' to player1 (235)");
@@ -927,7 +927,7 @@ io.on("connection", function(socket) {
         io.emit('log',"(197)")
         randomBoard();
         io.emit("board", board);
-        io.emit('log',board);
+        io.emit('log',JSON.stringify(board));
         io.emit('log',"emit 'board' (203)");
         // change to send array of randomed field
         io.to(clients[0]).emit("start", "start match");
@@ -986,7 +986,7 @@ io.on("connection", function(socket) {
       io.emit('log',"(197)")
       randomBoard();
       io.emit("board", board);
-      io.emit('log',board);
+      io.emit('log',JSON.stringify(board));
       io.emit('log',"emit 'board' (203)");
       // change to send array of randomed field
       io.to(clients[0]).emit("start", "start match");
