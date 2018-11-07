@@ -58,14 +58,20 @@
     <ul id="div1">
         <li style="font-size: 150%">Game Log:</li>
     </ul>
-    <h1>Client(s) online: <span id="counter"></span></h1>
+    <h1>Client(s) in the server: <span id="counter"></span></h1>
+    <h1>Client(s) in the room: <span id="counterRoom"></span></h1>
+
 
     <script type="text/javascript">
     socket.on('userCount', function (data) {
         $("#counter").text(data);
     });
-
     </script>
+    <script type="text/javascript">
+        socket.on('roomCount', function (data) {
+            $("#counterRoom").text(data);
+        });
+        </script>
     <script>
             socket.on('log', function(msg){
                var node = document.createElement("LI");
