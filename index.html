@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Node Socket</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.4.2.min.js"></script>
     <script>
         var socket = io();
     </script>
@@ -52,13 +53,20 @@
             background-color: #eee2dc
         }
     </style>
-
+    <div id="userCount"></div>
     <button style="margin:auto;display:block" onclick="reset();">Reset!</button>
     <ul id="div1">
         <li style="font-size: 150%">Game Log:</li>
     </ul>
+    <h1>Client(s) online: <span id="counter"></span></h1>
+
+    <script type="text/javascript">
+    socket.on('userCount', function (data) {
+        $("#counter").text(data);
+    });
+
+    </script>
     <script>
-            var socket = io();
             socket.on('log', function(msg){
                var node = document.createElement("LI");
                var textnode = document.createTextNode(msg);
@@ -67,6 +75,5 @@
             });
     </script>
     <script src="index.js"></script>
-
 </body>
 </html>

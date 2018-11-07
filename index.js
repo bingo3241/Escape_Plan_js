@@ -16,6 +16,7 @@ var roomClients = {
     "point":0
   }
 };
+var userCount = 0;
 
 var board = {
   "wardenindex":[,],
@@ -172,6 +173,8 @@ app.get('/index.js', function(request, result) {
 });
 
 io.on("connection", function(socket) {
+  userCount++;
+  io.emit('userCount',userCount);
   // if (io.engine.clientsCount > connectionsLimit) {
   //   socket.emit('err', { message: 'reach the limit of connections' })
   //   socket.disconnect()
@@ -179,6 +182,7 @@ io.on("connection", function(socket) {
   //   return
   // }
   io.emit('log','one user connected ' + socket.id);
+  console.log('one user connected ' + socket.id);
   socket.on("req", (message) => {
     if(message === "join") {
       io.of('/').in('room').clients((error, clients) => {
@@ -897,7 +901,10 @@ io.on("connection", function(socket) {
   });
         
   socket.on("disconnect", function() {
+    userCount--;
+    io.emit('userCount',userCount);
     io.emit('log',"one user disconnected " + socket.id);
+    console.log("one user disconnected " + socket.id);
     if(roomClients.player1.id === socket.id) {
       roomClients.player1.id = '';
       roomClients.player1.role = '';
@@ -905,8 +912,8 @@ io.on("connection", function(socket) {
       roomClients.player2.id = '';
       roomClients.player2.role = '';
     }
-    io.emit('log', JSON.stringify(roomClients));
-    io.emit('log','(848)')
+    // io.emit('log', JSON.stringify(roomClients));
+    // io.emit('log','(848)')
   });
 
   socket.on("rematch", () => {
