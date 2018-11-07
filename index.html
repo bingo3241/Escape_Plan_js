@@ -10,10 +10,52 @@
         var socket = io();
     </script>
 </head>
-<body>
-    <button onclick="reset();">Reset!</button>
+<body style="background-color: #F7F9FB">
+    <h1 style="text-align: center; background-color: #687864; font-family: Helvetica; color: whitesmoke; padding: 0.5em">ESCAPE PLAN</h1>
+    <style>
+        button {
+            display: inline-block;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 0;
+            text-decoration: none;
+            background: #5085a5;
+            color: whitesmoke;
+            font-family: Helvetica;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: background 250ms ease-in-out, 
+                        transform 150ms ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        button:hover,
+        button:focus {
+            background: #31708e;
+        }
+
+        button:focus {
+            outline: 1px solid #fff;
+            outline-offset: -4px;
+        }
+
+        button:active {
+            transform: scale(0.99);
+        }
+
+        ul {
+            font-family: Helvetica;
+            margin-left: 20em;
+            margin-right: 20em;
+            background-color: #eee2dc
+        }
+    </style>
+
+    <button style="margin:auto;display:block" onclick="reset();">Reset!</button>
     <ul id="div1">
-        <li>Game Log:</li>
+        <li style="font-size: 150%">Game Log:</li>
     </ul>
     <script>
             var socket = io();

@@ -30,6 +30,7 @@ var rematchPlayer2;
 function reset() {
   var socket = io();
   socket.emit("reset")
+  alert("force reset!");
   log("Test");
 }
 
