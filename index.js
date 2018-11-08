@@ -17,7 +17,7 @@ var roomClients = {
   }
 };
 var userCount = 0;
-// var roomCount = 0;
+var roomCount = 0;
 
 var board = {
   "wardenindex":[,],
@@ -168,7 +168,7 @@ app.get('/index.js', function(request, result) {
 io.on("connection", function(socket) {
   userCount++;
   io.emit('userCount',userCount);
-  // io.emit('roomCount',roomCount);
+  io.emit('roomCount',roomCount);
   // if (io.engine.clientsCount > connectionsLimit) {
   //   socket.emit('err', { message: 'reach the limit of connections' })
   //   socket.disconnect()
@@ -187,8 +187,8 @@ io.on("connection", function(socket) {
           io.emit('log', 'The room is currently full');
         } else {
           socket.join('room', () => {
-            // roomCount++;
-            // io.emit('roomCount', roomCount);
+            roomCount++;
+            io.emit('roomCount', roomCount);
             io.emit('log',socket.id+" joined the room");
             io.of('/').in('room').clients((error, clients) => {
               if (error) throw error;
@@ -290,8 +290,8 @@ io.on("connection", function(socket) {
       })  
     }
     if (message === "leave") {
-      // roomCount--;
-      // io.emit('roomCount', roomCount);
+      roomCount--;
+      io.emit('roomCount', roomCount);
       io.emit('log',socket.id+" left the room");
       socket.leave('room');
       if(roomClients.player1.id === socket.id) {

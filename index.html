@@ -12,7 +12,7 @@
     </script>
 </head>
 <body style="background-color: #F7F9FB">
-    <h1 style="text-align:left; font-family: Helvetica; color:teal; font-size: 1em;">Client(s) in the server: <span id="counter"></span></h1>
+    <h1 style="text-align:left; font-family: Helvetica; color:teal; font-size: 1em;">SERVER: <span id="counter"></span>&emsp;&emsp;&emsp;&emsp;&emsp;ROOM: <span id="roomCounter"></span> </h1>
     <h1 style="text-align: center; background-color: #687864; font-family: Helvetica; color: whitesmoke; padding: 0.5em">ESCAPE PLAN</h1>
     <style>
         button {
@@ -55,8 +55,8 @@
         }
     </style>
     <button style="margin:auto;display:block" onclick="reset();">Reset!</button>
-    <ul id="div1"> 
-        <li style="font-size: 150%">Game Log:</li>
+    <p style="font-size: 150%; font-family: Helvetica; margin-left: 0.34em; margin-right: 0.34em; background-color: #eee2dc; padding: 5px;">Game Log:</p>
+    <ul id="div1" style="height:350px; overflow:auto; margin-top: -25px; padding: 5px;"> 
     </ul>
     
     <!-- <h1>Client(s) in the room: <span id="counterRoom"></span></h1> -->
@@ -66,6 +66,9 @@
     socket.on('userCount', function (data) {
         $("#counter").text(data);
     });
+    socket.on('roomCount', function (data) {
+            $("#roomCounter").text(data);
+        });
     </script>
     <!-- <script type="text/javascript">
         socket.on('roomCount', function (data) {
