@@ -10,20 +10,23 @@
     <script>
         var socket = io();
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Playfair+Display+SC|Abel|Asap|Vidaloka" rel="stylesheet">
 </head>
-<body style="background-color: #F7F9FB">
-    <h1 style="text-align:left; font-family: Helvetica; color:teal; font-size: 1em;">Client(s) in the server: <span id="counter"></span></h1>
-    <h1 style="text-align: center; background-color: #687864; font-family: Helvetica; color: whitesmoke; padding: 0.5em">ESCAPE PLAN</h1>
+<body style="min-width: 600px; background-color: white; margin: 0; padding: 0;">
     <style>
         button {
-            display: inline-block;
-            border: none;
+            display: block;
+            border: 2.5px solid black;
+            border-color: white;
             padding: 1rem 2rem;
-            margin: 0;
+            margin: auto;
+            margin-top: 2em;
+            margin-bottom: 2em;
+            border-radius: 27px;
             text-decoration: none;
-            background: #5085a5;
-            color: whitesmoke;
-            font-family: Helvetica;
+            background: none;
+            color: white;
+            font-family: 'Asap';
             font-size: 1rem;
             cursor: pointer;
             text-align: center;
@@ -35,29 +38,120 @@
 
         button:hover,
         button:focus {
-            background: #31708e;
+            background: #20a141;
         }
 
-        button:focus {
+        /* button:focus {
             outline: 1px solid #fff;
             outline-offset: -4px;
-        }
+        } */
 
         button:active {
             transform: scale(0.99);
+            outline: none;
+        }
+
+        p {
+            font-family: 'Asap';
+            margin-left: 2.5em;
+            margin-right: 2.5em;
+            background-color:none;
+            padding-top: 0em;
+            font-size: 150%;
         }
 
         ul {
-            font-family: Helvetica;
-            margin-left: 0.5em;
-            margin-right: 0.5em;
-            background-color: #eee2dc
+            font-family: 'Asap';
+            margin-left: 3em;
+            margin-right: 3em;
+            background-color:none;
+            padding-top: 0em;
+            /*overflow: auto; */
         }
+
+        @font-face {
+            font-family: Audrey;
+            src: local('Audrey-Normal.otf') format("opentype");
+        }
+
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .sticky + .content {
+            padding-top: 300px;
+        }
+
+        h1 {
+            text-align: left;  
+            /* background:linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)); */
+            background-color: rgba(0, 0, 0, 0.5);
+            font-family: 'Playfair Display SC';
+            font-weight: normal; 
+            color: white; 
+            padding: 0.5em;
+            padding-left: 2em; 
+            margin-top: 0em;
+            margin-bottom: 0em;
+            
+            /* float: left; */
+        }
+
+        h2 {
+            margin-top  : 0em;
+            text-align: center;
+            /* background-image: url('/blue.jpg'); */
+            background: none;
+            background-size: cover;
+            padding: 1.5em;
+            padding-top: 1.7em;
+            color: white;
+            font-size: 200%;
+            font-family: 'Asap';
+            font-weight: normal;
+        }
+
+        .header {
+            size: absolute;
+            height: 300px;
+            background: url('https://i.imgur.com/4kfDKNT.jpg')
+            /* background: url('blue.jpg'); */
+        }
+        .span1 {
+            float: right;
+            padding-right: 2.5em;
+            font-size: 60%;
+            padding-top: 10px;
+            font-family: 'Asap';
+        }
+
     </style>
-    <button style="margin:auto;display:block" onclick="reset();">Reset!</button>
-    <ul id="div1"> 
-        <li style="font-size: 150%">Game Log:</li>
-    </ul>
+    <div class="header" id="myHeader">
+        <h1>
+            Escape Plan 
+            <span class="span1"> 
+                CLIENT: <span style="padding-right: 30px" id="counter"></span>
+                ROOM: <span id="roomCounter"></span>
+            </span>
+        </h1>
+        <h2> 
+            - take control of the game -
+            <button onclick="reset();">RESET</button> 
+        </h2>
+    </div>
+
+    <div class="content">
+        <p>
+            Game Log:
+        </p>
+        <ul id="div1"> </ul>
+    </div>
     
     <!-- <h1>Client(s) in the room: <span id="counterRoom"></span></h1> -->
 
@@ -65,6 +159,10 @@
     <script type="text/javascript">
     socket.on('userCount', function (data) {
         $("#counter").text(data);
+    });
+
+    socket.on('roomCount', function (data) {
+        $("#roomCounter").text(data);
     });
     </script>
     <!-- <script type="text/javascript">
@@ -80,6 +178,20 @@
                document.getElementById("div1").appendChild(node);
             });
     </script>
+    <script>
+        window.onscroll = function() {myFunction()};
+        
+        var header = document.getElementById("myHeader");
+        var sticky = header.offsetTop;
+        
+        function myFunction() {
+          if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+          } else {
+            header.classList.remove("sticky");
+          }
+        }
+        </script>
     <script src="index.js"></script>
 </body>
 </html>
