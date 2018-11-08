@@ -1069,4 +1069,9 @@ function winner(role) {
   
   io.emit("winner",result);
   // io.emit('log',"emit 'winner'");
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> f7a392059422bef0f43097d4694ef7e91dd7deb1
