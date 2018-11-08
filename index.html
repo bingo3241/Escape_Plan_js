@@ -12,13 +12,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Playfair+Display+SC|Abel|Asap|Vidaloka" rel="stylesheet">
 </head>
-<<<<<<< HEAD
 <body style="min-width: 600px; background-color: white; margin: 0; padding: 0;">
-=======
-<body style="background-color: #F7F9FB">
-    <h1 style="text-align:left; font-family: Helvetica; color:teal; font-size: 1em;">SERVER: <span id="counter"></span>&emsp;&emsp;&emsp;&emsp;&emsp;ROOM: <span id="roomCounter"></span> </h1>
-    <h1 style="text-align: center; background-color: #687864; font-family: Helvetica; color: whitesmoke; padding: 0.5em">ESCAPE PLAN</h1>
->>>>>>> f7a392059422bef0f43097d4694ef7e91dd7deb1
     <style>
         button {
             display: block;
@@ -138,7 +132,6 @@
         }
 
     </style>
-<<<<<<< HEAD
     <div class="header" id="myHeader">
         <h1>
             Escape Plan 
@@ -159,12 +152,6 @@
         </p>
         <ul id="div1"> </ul>
     </div>
-=======
-    <button style="margin:auto;display:block" onclick="reset();">Reset!</button>
-    <p style="font-size: 150%; font-family: Helvetica; margin-left: 0.34em; margin-right: 0.34em; background-color: #eee2dc; padding: 5px;">Game Log:</p>
-    <ul id="div1" style="height:350px; overflow:auto; margin-top: -25px; padding: 5px;"> 
-    </ul>
->>>>>>> f7a392059422bef0f43097d4694ef7e91dd7deb1
     
     <!-- <h1>Client(s) in the room: <span id="counterRoom"></span></h1> -->
 
@@ -173,16 +160,10 @@
     socket.on('userCount', function (data) {
         $("#counter").text(data);
     });
-<<<<<<< HEAD
 
     socket.on('roomCount', function (data) {
         $("#roomCounter").text(data);
     });
-=======
-    socket.on('roomCount', function (data) {
-            $("#roomCounter").text(data);
-        });
->>>>>>> f7a392059422bef0f43097d4694ef7e91dd7deb1
     </script>
     <!-- <script type="text/javascript">
         socket.on('roomCount', function (data) {
