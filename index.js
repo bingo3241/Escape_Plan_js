@@ -33,16 +33,7 @@ function reset() {
   var socket = io();
   socket.emit("reset")
   alert("force reset!");
-  log("Test");
 }
-
-// function log(message) {
-//   var para = document.createElement("p");
-//   var node = document.createTextNode(message);
-//   para.appendChild(node);
-//   var element = document.getElementById("div1");
-//   element.appendChild(para);
-// }
 
 function randomRoles() {
   if(Math.random() < 0.5) {
@@ -1009,7 +1000,7 @@ io.on("connection", function(socket) {
       io.emit('log',"emit 'start' to player2 (205)");
       socket.on("ready", () => {
         if(roomClients.player1.role == "warden") {
-          io.to(roomClients.player1.id).emit("turn", "warden");
+          io.to(roomCliืents.player1.id).emit("turn", "warden");
           io.emit('log',"emit 'turn' to player1 (212)");
         } else if(roomClients.player2.role == "warden") {
           io.to(roomClients.player2.id).emit("turn", "warden");
