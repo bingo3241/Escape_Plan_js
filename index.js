@@ -30,7 +30,6 @@ var rematchPlayer2;
 // var path = require('path');
 
 function reset() {
-  var socket = io();
   socket.emit("reset")
   alert("force reset!");
 }
