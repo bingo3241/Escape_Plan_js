@@ -43,8 +43,8 @@ function randomRoles() {
     roomClients.player2.role = "prisoner";
     roomClients.player1.role = "warden";
   }
-  io.emit('log','Player1 is '+roomClients.playaer1.role);
-  io.emit('log','Player2 is '+roomClients.playaer2.role);
+  io.emit('log','Player1 is '+roomClients.player1.role);
+  io.emit('log','Player2 is '+roomClients.player2.role);
 };
 
 function isEqual(array1,array2) {
@@ -199,7 +199,7 @@ io.on("connection", function(socket) {
                   socket.on("name", (playername) => {
                     roomClients.player1.name = playername;
                     io.emit('log',"set player1's name to "+playername);
-                    io.emit('log',JSON.stringify(roomClients));
+                    // io.emit('log',JSON.stringify(roomClients));
                     io.emit("waiting", "waiting for another opponent...");
                     // io.emit('log',"emit 'waiting' (169)");
                   })
@@ -209,7 +209,7 @@ io.on("connection", function(socket) {
                   socket.on("name", (playername) => {
                     roomClients.player2.name = playername;
                     io.emit('log',"set player2's name to "+playername);
-                    io.emit('log',JSON.stringify(roomClients));
+                    // io.emit('log',JSON.stringify(roomClients));
                     io.emit("waiting", "waiting for another opponent...");
                     // io.emit('log',"emit 'waiting' (183)");
                   })
@@ -824,12 +824,12 @@ io.on("connection", function(socket) {
               winner("prisoner");
               // io.emit('log',"emit from winner() (760)")
               io.emit('log',"prisoner win");
-              io.emit('log',"Player1: "+roomClients.player1.point+", Player2 :"+roomClients.player2.point);
+              io.emit('log',""+roomClients.player1.name+": "+roomClients.player1.point+", "+roomClients.player2.name+": "+roomClients.player2.point);
             } else if(isEqual(board.prisonerindex,board.wardenindex)) {
               winner("warden");
               // io.emit('log',"emit from winner() (766)")
               io.emit('log',"warden win");
-              io.emit('log',"Player1: "+roomClients.player1.point+", Player2 :"+roomClients.player2.point);
+              io.emit('log',""+roomClients.player1.name+": "+roomClients.player1.point+", "+roomClients.player2.name+": "+roomClients.player2.point);
             } else {
               io.emit("turn", "warden");
               // io.emit('log',"emit 'turn' (764)")
@@ -859,8 +859,7 @@ io.on("connection", function(socket) {
               winner("warden");
               // io.emit('log',"emit from winner() (794)")
               io.emit('log',"warden win");
-              io.emit('log',"Player1: "+roomClients.player1.point+", Player2 :"+roomClients.player2.point);
-            } else {
+              io.emit('log',""+roomClients.player1.name+": "+roomClients.player1.point+", "+roomClients.player2.name+": "+roomClients.player2.point);
               io.emit("turn", "prisoner");
               // io.emit('log',"emit 'turn' (792)")
             }
@@ -1068,6 +1067,6 @@ function winner(role) {
   }
   
   io.emit("winner",result);
-  io.emit('log',"emit 'winner'");
+  // io.emit('log',"emit 'winner'");
 }
 
