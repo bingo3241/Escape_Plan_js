@@ -168,6 +168,10 @@ app.get('/index.js', function(request, result) {
 });
 
 io.on("connection", function(socket) {
+  socket.on('b', (m) => {
+    io.emit('broadcast',m);
+    io.emit('log',"Broadcast: "+m);
+  })
   userCount++;
   io.emit('userCount',userCount);
   io.emit('roomCount',roomCount);

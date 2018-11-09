@@ -131,6 +131,12 @@
             font-family: 'Asap';
         }
 
+        form button { 
+            width: 9%; 
+            background: rgb(130, 224, 255); 
+            border: none; 
+            padding: 10px; }
+
     </style>
     <div class="header" id="myHeader">
         <h1>
@@ -142,7 +148,10 @@
         </h1>
         <h2> 
             - take control of the game -
-            <button onclick="reset();">RESET</button> 
+            <button onclick="reset();">RESET</button>
+            <form action="">
+                <input id="m" autocomplete="off" /><button style="width:9%">Send</button>
+            </form>
         </h2>
     </div>
 
@@ -165,17 +174,18 @@
         $("#roomCounter").text(data);
     });
     </script>
-    <!-- <script type="text/javascript">
-        socket.on('roomCount', function (data) {
-            $("#counterRoom").text(data);
-        });
-    </script> -->
     <script>
             socket.on('log', function(msg){
                var node = document.createElement("LI");
                var textnode = document.createTextNode(msg);
                node.appendChild(textnode);
                document.getElementById("div1").appendChild(node);
+            });
+
+            $('form').submit(function(){
+                socket.emit('b', $('#m').val());
+                $('#m').val('');
+                return false;
             });
     </script>
     <script>
