@@ -296,21 +296,17 @@ io.on("connection", function(socket) {
       io.emit('roomCount', roomCount);
       io.emit('log',socket.id+" left the room");
       socket.leave('room');
-      if(roomClients.player1.id === socket.id) {
-        roomClients.player1.name = "";
-        roomClients.player1.id = "";
-        roomClients.player1.role = "";
-        roomClients.player1.point = 0;
-        io.to(roomClients.player2.id).emit("clear", "someone leave");
-        // io.emit('log',"emit 'clear' to player2 (269)")
-      } else if(roomClients.player2.id === socket.id) {
-        roomClients.player2.name = "";
-        roomClients.player2.id = "";
-        roomClients.player2.role = "";
-        roomClients.player2.point = 0;
-        io.to(roomClients.player1.id).emit("clear", "someone leave");
+      roomClients.player1.name = "";
+      roomClients.player1.id = "";
+      roomClients.player1.role = "";
+      roomClients.player1.point = 0;
+      roomClients.player2.name = "";
+      roomClients.player2.id = "";
+      roomClients.player2.role = "";
+      roomClients.player2.point = 0;
+      io.to(roomClients.player1.id).emit("clear", "someone leave");
+      io.to(roomClients.player2.id).emit("clear", "someone leave");
         // io.emit('log',"emit 'clear' to player1 (267)")
-      }
       io.emit('log',JSON.stringify(roomClients));
       // io.emit('log','(265)')
       io.of('/').in('room').clients((error, clients) => {
