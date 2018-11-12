@@ -3,7 +3,7 @@
 
 Implenenting socket programming to create a game called "Escape Plan"
 Backend of this game use Socket.io library to implement socket programming where the frontend is Android Application where github link can be accessable here
->> (https://github.com/tann9949/Escape_Plan.git)
+>> https://github.com/tann9949/Escape_Plan.git
 
 ## Group Members:
 1. Chompakorn Chaksangchaichot 5931229821
